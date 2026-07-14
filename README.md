@@ -44,3 +44,25 @@ In order to meet my personal deadline of 8/08 for my initial release I had to sk
 - Adding triggers via the `TAP` button
 
 I'll be continuously working on these features as well as improving the synthesis of each sound to greater match the sounds of the original hardware.
+
+---
+
+## Modernized tooling note
+
+This copy has been migrated off webpack/babel/pug onto **Vite**:
+
+- `npm install`
+- `npm run dev` — dev server on http://localhost:3000
+- `npm run build` — production build to `dist/`
+- `npm run preview` — preview the production build locally
+
+Changes from the original repo:
+- Removed the vendored `vendor/react`, `vendor/react-dom`, `vendor/scheduler` (a patched pre-release React build) in favor of real React 18 (`react-dom/client`'s `createRoot`).
+- Removed `@reach/auto-id` in favor of React 18's built-in `useId` (only one usage, in `src/components/switch/index.jsx`).
+- Converted `src/index.pug` to a plain root-level `index.html` (Vite's entry-point convention).
+- Renamed the ~38 `.js` files that contain JSX to `.jsx` (esbuild requires this to parse JSX during production builds).
+- `static/` → `public/` (Vite's static asset convention); `static/icons` → `public/icons`, `splashscreens/` → `public/splashscreens`.
+- Added `baseUrl: "./src"` to `jsconfig.json` + the `vite-tsconfig-paths` plugin so the existing bare imports (`import x from "actionCreators"`) keep working without a big alias list.
+- Deleted `webpack.config.*.js`, `babelConfig.js`.
+
+Verified: `npm install`, `npm run build`, and `npm run dev` (serving real module content, not just the SPA fallback) all succeed as of this migration.
