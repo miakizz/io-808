@@ -66,3 +66,14 @@ Changes from the original repo:
 - Deleted `webpack.config.*.js`, `babelConfig.js`.
 
 Verified: `npm install`, `npm run build`, and `npm run dev` (serving real module content, not just the SPA fallback) all succeed as of this migration.
+
+## Bug fix: preset load resetting dials
+
+`STATE_LOAD` (triggered by the load/upload button) was replacing the *entire*
+Redux state with the loaded save file's contents. Save files only contain the
+keys in `PERSISTANCE_FILTER` (instrumentState, patternLengths, steps,
+masterVolume, tempo, fineTempo) by design, so every other state field
+(selectedMode, currentPart, currentVariation, currentStep, etc.) was wiped to
+`undefined` on load — which is why knobs snapped to invalid positions with no
+error. Fixed in `src/reducers/index.js` to merge only the persisted keys into
+the existing state instead of replacing the whole tree.
