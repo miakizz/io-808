@@ -6,6 +6,27 @@ import Button from "components/button";
 import { PERSISTANCE_FILTER } from "store-constants";
 import { buttonColor, darkGrey } from "theme/variables";
 
+function getJSONHash(obj) {
+    // 1. Serialize the object while sorting keys alphabetically
+    const orderedString = JSON.stringify(obj, (key, value) => {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+            return Object.keys(value).sort().reduce((sorted, k) => {
+                sorted[k] = value[k];
+                return sorted;
+            }, {});
+        }
+        return value;
+    });
+
+    // 2. Apply the simple DJB2 hash to the sorted string
+    let hash = 5381;
+    for (let i = 0; i < orderedString.length; i++) {
+        hash = (hash * 33) ^ orderedString.charCodeAt(i);
+    }
+    return hash >>> 0;
+}
+
+
 function validateState(state) {
   let output = true;
 
@@ -58,6 +79,8 @@ const LoadButton = props => {
 
         reader.onload = () => {
           let loadedState = JSON.parse(reader.result);
+          const hash = getJSONHash(loadedState);
+          console.log("Loaded state hash:", hash);
           if (validateState(loadedState)) {
             onLoadedState(loadedState);
           } else {
