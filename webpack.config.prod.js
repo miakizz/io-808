@@ -3,7 +3,7 @@ require("dotenv").config();
 var path = require("path");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+var OptimizeCSSAssetsPlugin = require("css-minimizer-webpack-plugin");
 var CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
